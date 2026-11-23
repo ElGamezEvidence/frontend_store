@@ -5,8 +5,8 @@ import { storeApi } from "@/lib/store-api";
 import { ProductCard } from "@/components/store/product-card";
 import { Button } from "@/components/ui/button";
 
-const HERO_FALLBACK =
-  "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1800&q=80";
+/** Brand cover — local asset (shopping / marketplace vibe for Soukly). */
+const HERO_COVER = "/hero-soukly.jpg";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -20,9 +20,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     storeApi.getCategories().catch(() => [] as Array<Record<string, unknown>>),
   ]);
 
-  const popularHero = (popular.items[0] as { images?: Array<{ url?: string }> } | undefined)?.images?.[0]
-    ?.url;
-  const heroSrc = String(settings?.heroImageUrl || popularHero || HERO_FALLBACK);
+  // Prefer dedicated cover (never fall back to a random product image).
+  const configured = String(settings?.heroImageUrl || "").trim();
+  const heroSrc =
+    configured && !configured.includes("photo-1608571423902") && !configured.includes("photo-1556745753")
+      ? configured
+      : HERO_COVER;
   const brand = String(settings?.storeName ?? t("common.brand"));
   const benefits = [
     { icon: ShieldCheck, label: t("home.benefit1") },
@@ -39,12 +42,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={heroSrc}
-            alt={brand}
-            className="absolute inset-0 h-full w-full object-cover animate-kenburns"
+            alt={`${brand} — souk en ligne au Maroc`}
+            className="absolute inset-0 h-full w-full object-cover object-[72%_center] animate-kenburns md:object-[78%_center]"
             fetchPriority="high"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f1c]/88 via-[#0b1f1c]/55 to-[#0b1f1c]/25" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1f1c]/70 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f1c]/90 via-[#0b1f1c]/55 to-[#0b1f1c]/15" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1f1c]/75 via-transparent to-[#0b1f1c]/25" />
 
           <div className="relative mx-auto flex min-h-[78vh] max-w-7xl flex-col justify-end px-4 pb-14 pt-28 md:min-h-[86vh] md:px-6 md:pb-20">
             <div className="max-w-2xl animate-fade-up space-y-6 text-white">
