@@ -46,12 +46,14 @@ Le projet utilise **OpenNext** (`@opennextjs/cloudflare`) pour Next.js 15 sur **
 1. Connecter le repo `ElGamezEvidence/frontend_store`, branche `main`.
 2. **Build command :**
    ```bash
-   npx opennextjs-cloudflare build
+   npm run build
    ```
+   (`build` = `opennextjs-cloudflare build` — obligatoire pour Cloudflare Workers)
 3. **Deploy command :**
    ```bash
-   npx opennextjs-cloudflare deploy
+   npx wrangler deploy
    ```
+   (ou `npx opennextjs-cloudflare deploy`)
 4. **Root directory :** `/` (racine du repo)
 5. **Node version :** `22` (fichier `.nvmrc` déjà présent — ou variable Build `NODE_VERSION=22`)
 6. Variables d’environnement (Production) :
