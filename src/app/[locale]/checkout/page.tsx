@@ -9,6 +9,6 @@ export default async function CheckoutPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const zones = await storeApi.getShippingZones();
+  const zones = await storeApi.getShippingZones().catch(() => []);
   return <CheckoutForm zones={zones} />;
 }

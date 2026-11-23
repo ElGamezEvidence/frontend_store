@@ -30,8 +30,14 @@ export default async function CollectionsPage({
   });
 
   const [result, categories] = await Promise.all([
-    storeApi.getProducts(`?${qs.toString()}`),
-    storeApi.getCategories(),
+    storeApi.getProducts(`?${qs.toString()}`).catch(() => ({
+      items: [] as Array<Record<string, unknown>>,
+      total: 0,
+      page: 1,
+      pageSize: 12,
+      totalPages: 0,
+    })),
+    storeApi.getCategories().catch(() => [] as Array<Record<string, unknown>>),
   ]);
 
   return (
