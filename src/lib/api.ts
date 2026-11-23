@@ -19,8 +19,14 @@ function resolveApiUrl() {
 
   const cleaned = normalizeApiUrl(configured);
 
-  const onNetlify = Boolean(process.env.NETLIFY || process.env.CONTEXT);
-  if (onNetlify || process.env.NODE_ENV === "production") {
+  const onCloudHost = Boolean(
+    process.env.NETLIFY ||
+      process.env.CONTEXT ||
+      process.env.CF_PAGES ||
+      process.env.CLOUDFLARE ||
+      process.env.WORKERS,
+  );
+  if (onCloudHost || process.env.NODE_ENV === "production") {
     if (!cleaned || /localhost|127\.0\.0\.1/.test(cleaned)) {
       return PRODUCTION_API_URL;
     }
@@ -28,7 +34,7 @@ function resolveApiUrl() {
 
   if (!cleaned) {
     throw new Error(
-      "API_URL / NEXT_PUBLIC_API_URL is not configured. Set it in Netlify environment variables to your Railway backend URL (including https://).",
+      "API_URL / NEXT_PUBLIC_API_URL is not configured. Set it in Cloudflare environment variables to your Railway backend URL (including https://).",
     );
   }
 

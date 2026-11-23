@@ -1,12 +1,16 @@
 node_modules
 .next
+.open-next
 out
 .env
 .env.local
 .env.*.local
+.dev.vars
 !.env.example
 *.log
 .DS_Store
 .vercel
+.wrangler
 *.tsbuildinfo
 next-env.d.ts
+cloudflare-env.d.ts
