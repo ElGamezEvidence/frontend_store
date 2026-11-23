@@ -154,5 +154,31 @@
     "termsTitle": "Terms of service",
     "shippingTitle": "Shipping policy",
     "returnsTitle": "Return policy"
+  },
+  "contact": {
+    "title": "Let's talk about your order",
+    "subtitle": "Questions, tracking or a quote? Fast replies on WhatsApp, phone or email.",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "call": "Call",
+    "write": "Email us",
+    "whatsapp": "Open WhatsApp",
+    "infoTitle": "Soukly support",
+    "infoBody": "We confirm every order by phone before shipping. WhatsApp support Monday to Saturday.",
+    "coverage": "Delivery area",
+    "hours": "Hours",
+    "hoursValue": "Mon–Sat · 9:00 – 20:00",
+    "formTitle": "Send a message",
+    "formSubtitle": "Fill the form — we reply quickly on WhatsApp.",
+    "name": "Full name",
+    "namePlaceholder": "Your name",
+    "phone": "Phone",
+    "message": "Message",
+    "messagePlaceholder": "How can we help?",
+    "submit": "Send via WhatsApp",
+    "sending": "Opening…",
+    "sent": "WhatsApp opened with your message",
+    "required": "Please fill in all fields",
+    "hint": "Opens your message directly in WhatsApp."
   }
 }

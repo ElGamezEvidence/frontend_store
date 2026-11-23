@@ -1,8 +1,13 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { BRAND } from "@/lib/brand";
+import { storeApi } from "@/lib/store-api";
 
 export async function StoreFooter({ storeName }: { storeName: string }) {
   const t = await getTranslations();
+  const settings = await storeApi.getSettings().catch(() => null);
+  const email = String(settings?.email || BRAND.email);
+  const phone = String(settings?.phone || BRAND.phone);
 
   return (
     <footer className="mt-20 border-t border-border bg-secondary/40">
@@ -20,9 +25,17 @@ export async function StoreFooter({ storeName }: { storeName: string }) {
           <Link href="/shipping-policy">{t("footer.shippingPolicy")}</Link>
           <Link href="/returns">{t("footer.returnPolicy")}</Link>
         </div>
-        <div className="text-sm text-muted-foreground">
+        <div className="space-y-2 text-sm text-muted-foreground">
           <p>COD · MAD · Maroc</p>
-          <p className="mt-4">© {new Date().getFullYear()} {storeName}. {t("footer.rights")}</p>
+          <a href={`mailto:${email}`} className="block hover:text-foreground">
+            {email}
+          </a>
+          <a href={`tel:${phone.replace(/\s/g, "")}`} className="block hover:text-foreground">
+            {BRAND.phoneDisplay}
+          </a>
+          <p className="pt-2">
+            © {new Date().getFullYear()} {storeName}. {t("footer.rights")}
+          </p>
         </div>
       </div>
     </footer>

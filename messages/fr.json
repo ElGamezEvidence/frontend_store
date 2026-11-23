@@ -154,5 +154,31 @@
     "termsTitle": "Conditions générales",
     "shippingTitle": "Politique de livraison",
     "returnsTitle": "Politique de retour"
+  },
+  "contact": {
+    "title": "Parlons de votre commande",
+    "subtitle": "Une question, un suivi ou un devis ? Réponse rapide par WhatsApp, téléphone ou email.",
+    "phoneLabel": "Téléphone",
+    "emailLabel": "Email",
+    "call": "Appeler",
+    "write": "Écrire",
+    "whatsapp": "Ouvrir WhatsApp",
+    "infoTitle": "Service client Soukly",
+    "infoBody": "Nous confirmons chaque commande par téléphone avant l'expédition. Support WhatsApp du lundi au samedi.",
+    "coverage": "Zone de livraison",
+    "hours": "Horaires",
+    "hoursValue": "Lun–Sam · 9h00 – 20h00",
+    "formTitle": "Envoyer un message",
+    "formSubtitle": "Remplissez le formulaire — on vous répond vite sur WhatsApp.",
+    "name": "Nom complet",
+    "namePlaceholder": "Votre nom",
+    "phone": "Téléphone",
+    "message": "Message",
+    "messagePlaceholder": "Décrivez votre demande…",
+    "submit": "Envoyer via WhatsApp",
+    "sending": "Ouverture…",
+    "sent": "WhatsApp ouvert avec votre message",
+    "required": "Merci de remplir tous les champs",
+    "hint": "Le message s'ouvre directement dans WhatsApp."
   }
 }
