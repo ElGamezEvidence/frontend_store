@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Truck, PhoneCall, ShieldCheck, MessageCircle, ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -21,7 +20,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     storeApi.getCategories().catch(() => [] as Array<Record<string, unknown>>),
   ]);
 
-  const heroSrc = String(settings?.heroImageUrl || HERO_FALLBACK);
+  const popularHero = (popular.items[0] as { images?: Array<{ url?: string }> } | undefined)?.images?.[0]
+    ?.url;
+  const heroSrc = String(settings?.heroImageUrl || popularHero || HERO_FALLBACK);
   const brand = String(settings?.storeName ?? t("common.brand"));
   const benefits = [
     { icon: ShieldCheck, label: t("home.benefit1") },
@@ -34,14 +35,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <div className="space-y-20 md:space-y-28">
       <section className="relative -mx-4 w-[calc(100%+2rem)] md:-mx-6 md:w-[calc(100%+3rem)] lg:left-1/2 lg:w-screen lg:max-w-[100vw] lg:-translate-x-1/2 lg:mx-0">
         <div className="relative min-h-[78vh] overflow-hidden md:min-h-[86vh]">
-          <Image
+          {/* Native img avoids Next image optimizer failures on some CDNs */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={heroSrc}
             alt={brand}
-            fill
-            priority
-            unoptimized={heroSrc.includes("unsplash.com")}
-            className="object-cover animate-kenburns"
-            sizes="100vw"
+            className="absolute inset-0 h-full w-full object-cover animate-kenburns"
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f1c]/88 via-[#0b1f1c]/55 to-[#0b1f1c]/25" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b1f1c]/70 via-transparent to-transparent" />
