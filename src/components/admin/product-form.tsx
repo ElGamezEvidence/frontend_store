@@ -2,7 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ImagePlus, Loader2, X } from "lucide-react";
+import { ImagePlus, Loader2, Star, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { createProductAction, updateProductAction } from "@/actions/products";
 import type { ProductFormValues } from "@/validations/product";
@@ -11,8 +11,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 type CategoryOption = { id: string; name: string };
+type FormImage = { url: string; alt?: string | null; sortOrder: number; isPrimary: boolean };
+
+const MAX_IMAGES = 8;
 
 export function ProductForm({
   categories,
@@ -27,31 +31,90 @@ export function ProductForm({
   const fileRef = useRef<HTMLInputElement>(null);
   const [pending, startTransition] = useTransition();
   const [uploading, setUploading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(initial?.images?.[0]?.url ?? "");
+  const [urlDraft, setUrlDraft] = useState("");
+  const [images, setImages] = useState<FormImage[]>(() => {
+    const list = initial?.images?.length
+      ? initial.images.map((img, index) => ({
+          url: img.url,
+          alt: img.alt ?? null,
+          sortOrder: img.sortOrder ?? index,
+          isPrimary: Boolean(img.isPrimary),
+        }))
+      : [];
+    if (list.length > 0 && !list.some((i) => i.isPrimary)) {
+      list[0].isPrimary = true;
+    }
+    return list;
+  });
   const [variants, setVariants] = useState(
     initial?.variants?.length ? initial.variants : [],
   );
 
-  async function onPickFile(file: File | null) {
-    if (!file) return;
+  function normalizePrimary(list: FormImage[]) {
+    if (list.length === 0) return list;
+    const hasPrimary = list.some((i) => i.isPrimary);
+    return list.map((img, index) => ({
+      ...img,
+      sortOrder: index,
+      isPrimary: hasPrimary ? img.isPrimary : index === 0,
+    }));
+  }
+
+  async function uploadFile(file: File): Promise<string | null> {
     if (!file.type.startsWith("image/")) {
       toast.error("Fichier image requis (JPG, PNG, WEBP)");
+      return null;
+    }
+    const dataUrl = await compressImageFile(file);
+    const form = new FormData();
+    form.set("file", file);
+    form.set("dataUrl", dataUrl);
+    const res = await fetch("/api/admin/upload", { method: "POST", body: form });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      toast.error(data.error === "FILE_TOO_LARGE" ? "Image trop lourde" : "Import impossible");
+      return null;
+    }
+    return String(data.url);
+  }
+
+  async function onPickFiles(fileList: FileList | null) {
+    if (!fileList?.length) return;
+    const remaining = MAX_IMAGES - images.length;
+    if (remaining <= 0) {
+      toast.error(`Maximum ${MAX_IMAGES} images`);
       return;
     }
+
+    const files = Array.from(fileList).slice(0, remaining);
     setUploading(true);
     try {
-      const dataUrl = await compressImageFile(file);
-      const form = new FormData();
-      form.set("file", file);
-      form.set("dataUrl", dataUrl);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: form });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        toast.error(data.error === "FILE_TOO_LARGE" ? "Image trop lourde" : "Import impossible");
-        return;
+      const uploaded: FormImage[] = [];
+      for (const file of files) {
+        const url = await uploadFile(file);
+        if (url) {
+          uploaded.push({
+            url,
+            alt: null,
+            sortOrder: images.length + uploaded.length,
+            isPrimary: images.length === 0 && uploaded.length === 0,
+          });
+        }
       }
-      setImageUrl(String(data.url));
-      toast.success("Image importée");
+      if (uploaded.length) {
+        setImages((prev) =>
+          normalizePrimary([
+            ...prev,
+            ...uploaded.map((img, i) => ({
+              ...img,
+              isPrimary: prev.length === 0 && i === 0,
+            })),
+          ]),
+        );
+        toast.success(
+          uploaded.length > 1 ? `${uploaded.length} images importées` : "Image importée",
+        );
+      }
     } catch {
       toast.error("Impossible de lire le fichier");
     } finally {
@@ -60,8 +123,58 @@ export function ProductForm({
     }
   }
 
+  function addUrlImage() {
+    const url = urlDraft.trim();
+    if (!url) return;
+    if (!/^https?:\/\//i.test(url) && !url.startsWith("data:image/")) {
+      toast.error("URL image invalide");
+      return;
+    }
+    if (images.length >= MAX_IMAGES) {
+      toast.error(`Maximum ${MAX_IMAGES} images`);
+      return;
+    }
+    if (images.some((i) => i.url === url)) {
+      toast.error("Cette image est déjà ajoutée");
+      return;
+    }
+    setImages((prev) =>
+      normalizePrimary([
+        ...prev,
+        { url, alt: null, sortOrder: prev.length, isPrimary: prev.length === 0 },
+      ]),
+    );
+    setUrlDraft("");
+    toast.success("Image ajoutée");
+  }
+
+  function removeImage(index: number) {
+    setImages((prev) => normalizePrimary(prev.filter((_, i) => i !== index)));
+  }
+
+  function setPrimary(index: number) {
+    setImages((prev) =>
+      prev.map((img, i) => ({
+        ...img,
+        isPrimary: i === index,
+        sortOrder: i,
+      })),
+    );
+  }
+
+  function moveImage(index: number, direction: -1 | 1) {
+    setImages((prev) => {
+      const next = [...prev];
+      const target = index + direction;
+      if (target < 0 || target >= next.length) return prev;
+      [next[index], next[target]] = [next[target], next[index]];
+      return normalizePrimary(next);
+    });
+  }
+
   function onSubmit(formData: FormData) {
     const categoryIds = formData.getAll("categoryIds").map(String);
+    const ordered = normalizePrimary(images);
     const payload: ProductFormValues = {
       name: String(formData.get("name") || ""),
       nameAr: String(formData.get("nameAr") || "") || null,
@@ -81,9 +194,7 @@ export function ProductForm({
       isPopular: formData.get("isPopular") === "on",
       isOnSale: formData.get("isOnSale") === "on",
       categoryIds,
-      images: imageUrl
-        ? [{ url: imageUrl, isPrimary: true, sortOrder: 0 }]
-        : [],
+      images: ordered,
       variants: variants.map((v, index) => ({
         ...v,
         name: v.name,
@@ -162,41 +273,88 @@ export function ProductForm({
         </div>
 
         <div className="space-y-3 md:col-span-2">
-          <Label>Image produit</Label>
-          <div className="grid gap-4 rounded-2xl border border-dashed border-border bg-secondary/30 p-4 md:grid-cols-[180px_1fr]">
-            <div className="relative aspect-square overflow-hidden rounded-xl bg-muted">
-              {imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={imageUrl} alt="Aperçu" className="h-full w-full object-cover" />
-              ) : (
-                <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
-                  <ImagePlus className="h-8 w-8" />
-                  <span className="text-xs">Aperçu</span>
-                </div>
-              )}
-              {imageUrl ? (
-                <button
-                  type="button"
-                  onClick={() => setImageUrl("")}
-                  className="absolute end-2 top-2 rounded-full bg-background/90 p-1 shadow"
-                  aria-label="Retirer l'image"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              ) : null}
-            </div>
-            <div className="flex flex-col justify-center gap-3">
+          <div className="flex items-center justify-between gap-3">
+            <Label>Images produit ({images.length}/{MAX_IMAGES})</Label>
+            <p className="text-xs text-muted-foreground">1ʳᵉ image = principale · galerie boutique</p>
+          </div>
+
+          <div className="rounded-2xl border border-dashed border-border bg-secondary/30 p-4 space-y-4">
+            {images.length > 0 ? (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                {images.map((img, index) => (
+                  <div
+                    key={`${img.url.slice(0, 48)}-${index}`}
+                    className={cn(
+                      "group relative aspect-square overflow-hidden rounded-xl bg-muted ring-2",
+                      img.isPrimary ? "ring-primary" : "ring-transparent",
+                    )}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={img.url} alt="" className="h-full w-full object-cover" />
+                    {img.isPrimary ? (
+                      <span className="absolute start-2 top-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                        Princip
+                      </span>
+                    ) : null}
+                    <div className="absolute inset-x-0 bottom-0 flex gap-1 bg-black/55 p-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
+                      <button
+                        type="button"
+                        title="Image principale"
+                        onClick={() => setPrimary(index)}
+                        className="rounded-md bg-white/90 p-1 text-foreground"
+                      >
+                        <Star className={cn("h-3.5 w-3.5", img.isPrimary && "fill-current text-primary")} />
+                      </button>
+                      <button
+                        type="button"
+                        title="Déplacer"
+                        disabled={index === 0}
+                        onClick={() => moveImage(index, -1)}
+                        className="rounded-md bg-white/90 px-1.5 text-xs font-semibold disabled:opacity-40"
+                      >
+                        ←
+                      </button>
+                      <button
+                        type="button"
+                        title="Déplacer"
+                        disabled={index === images.length - 1}
+                        onClick={() => moveImage(index, 1)}
+                        className="rounded-md bg-white/90 px-1.5 text-xs font-semibold disabled:opacity-40"
+                      >
+                        →
+                      </button>
+                      <button
+                        type="button"
+                        title="Supprimer"
+                        onClick={() => removeImage(index)}
+                        className="ms-auto rounded-md bg-white/90 p-1 text-destructive"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center gap-2 py-10 text-muted-foreground">
+                <ImagePlus className="h-8 w-8" />
+                <p className="text-sm">Aucune image — importez depuis le PC</p>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <input
                 ref={fileRef}
                 type="file"
                 accept="image/jpeg,image/png,image/webp,image/gif"
+                multiple
                 className="hidden"
-                onChange={(e) => onPickFile(e.target.files?.[0] ?? null)}
+                onChange={(e) => onPickFiles(e.target.files)}
               />
               <Button
                 type="button"
                 variant="outline"
-                disabled={uploading}
+                disabled={uploading || images.length >= MAX_IMAGES}
                 onClick={() => fileRef.current?.click()}
               >
                 {uploading ? (
@@ -207,24 +365,36 @@ export function ProductForm({
                 ) : (
                   <>
                     <ImagePlus className="me-2 h-4 w-4" />
-                    Importer depuis le PC
+                    Importer plusieurs images
                   </>
                 )}
               </Button>
               <p className="text-xs text-muted-foreground">
-                JPG, PNG ou WEBP — max ~4 Mo. L&apos;image est compressée automatiquement.
+                JPG, PNG, WEBP — sélection multiple, max {MAX_IMAGES} · compressées auto
               </p>
-              <div className="space-y-1">
+            </div>
+
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+              <div className="flex-1 space-y-1">
                 <Label htmlFor="imageUrl" className="text-xs text-muted-foreground">
                   Ou coller une URL
                 </Label>
                 <Input
                   id="imageUrl"
-                  value={imageUrl.startsWith("data:") ? "" : imageUrl}
+                  value={urlDraft}
                   placeholder="https://…"
-                  onChange={(e) => setImageUrl(e.target.value)}
+                  onChange={(e) => setUrlDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addUrlImage();
+                    }
+                  }}
                 />
               </div>
+              <Button type="button" variant="secondary" onClick={addUrlImage} disabled={!urlDraft.trim()}>
+                Ajouter
+              </Button>
             </div>
           </div>
         </div>
