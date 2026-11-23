@@ -1,0 +1,17 @@
+[build]
+  command = "npm run build"
+  # Do NOT set publish to ".next" in the Netlify UI.
+  # The Next.js Runtime plugin publishes the correct output.
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+# Next.js App Router + Middleware need the Next.js Runtime.
+# Required site env vars (set in Netlify UI → Environment variables):
+#   NEXT_PUBLIC_API_URL = https://your-backend.up.railway.app
+#   API_URL             = https://your-backend.up.railway.app
+#   NEXT_PUBLIC_APP_URL = https://your-frontend.netlify.app

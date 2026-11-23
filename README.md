@@ -34,12 +34,20 @@ npm run dev
 Exemple prod:
 
 ```env
-NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
-API_URL=https://your-backend.onrender.com
-NEXT_PUBLIC_APP_URL=https://your-frontend.vercel.app
+NEXT_PUBLIC_API_URL=https://your-backend.up.railway.app
+API_URL=https://your-backend.up.railway.app
+NEXT_PUBLIC_APP_URL=https://your-frontend.netlify.app
 ```
 
 Le backend doit autoriser ce frontend via `CORS_ORIGIN`.
+
+## Déploiement Netlify
+
+1. Connecter le repo `frontend_store`.
+2. **Ne pas** mettre Publish directory = `.next` dans l’UI (laisser vide / géré par le plugin).
+3. Build command : `npm run build` (déjà dans `netlify.toml`).
+4. Ajouter les 3 variables d’environnement ci-dessus.
+5. Si un deploy échoue avec HTTP 500 sur edge functions : **Clear cache and deploy site**.
 
 ## Export Excel commandes
 
