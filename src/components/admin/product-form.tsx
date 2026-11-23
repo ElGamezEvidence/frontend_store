@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { ImagePlus, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { createProductAction, updateProductAction } from "@/actions/products";
 import type { ProductFormValues } from "@/validations/product";
+import { compressImageFile } from "@/lib/image-compress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,12 +24,41 @@ export function ProductForm({
   productId?: string;
 }) {
   const router = useRouter();
+  const fileRef = useRef<HTMLInputElement>(null);
   const [pending, startTransition] = useTransition();
+  const [uploading, setUploading] = useState(false);
+  const [imageUrl, setImageUrl] = useState(initial?.images?.[0]?.url ?? "");
   const [variants, setVariants] = useState(
-    initial?.variants?.length
-      ? initial.variants
-      : [],
+    initial?.variants?.length ? initial.variants : [],
   );
+
+  async function onPickFile(file: File | null) {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Fichier image requis (JPG, PNG, WEBP)");
+      return;
+    }
+    setUploading(true);
+    try {
+      const dataUrl = await compressImageFile(file);
+      const form = new FormData();
+      form.set("file", file);
+      form.set("dataUrl", dataUrl);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: form });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        toast.error(data.error === "FILE_TOO_LARGE" ? "Image trop lourde" : "Import impossible");
+        return;
+      }
+      setImageUrl(String(data.url));
+      toast.success("Image importée");
+    } catch {
+      toast.error("Impossible de lire le fichier");
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  }
 
   function onSubmit(formData: FormData) {
     const categoryIds = formData.getAll("categoryIds").map(String);
@@ -50,8 +81,8 @@ export function ProductForm({
       isPopular: formData.get("isPopular") === "on",
       isOnSale: formData.get("isOnSale") === "on",
       categoryIds,
-      images: String(formData.get("imageUrl") || "")
-        ? [{ url: String(formData.get("imageUrl")), isPrimary: true, sortOrder: 0 }]
+      images: imageUrl
+        ? [{ url: imageUrl, isPrimary: true, sortOrder: 0 }]
         : [],
       variants: variants.map((v, index) => ({
         ...v,
@@ -129,15 +160,75 @@ export function ProductForm({
             defaultValue={initial?.costPrice ?? undefined}
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="imageUrl">URL image</Label>
-          <Input
-            id="imageUrl"
-            name="imageUrl"
-            defaultValue={initial?.images?.[0]?.url}
-            placeholder="https://..."
-          />
+
+        <div className="space-y-3 md:col-span-2">
+          <Label>Image produit</Label>
+          <div className="grid gap-4 rounded-2xl border border-dashed border-border bg-secondary/30 p-4 md:grid-cols-[180px_1fr]">
+            <div className="relative aspect-square overflow-hidden rounded-xl bg-muted">
+              {imageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={imageUrl} alt="Aperçu" className="h-full w-full object-cover" />
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
+                  <ImagePlus className="h-8 w-8" />
+                  <span className="text-xs">Aperçu</span>
+                </div>
+              )}
+              {imageUrl ? (
+                <button
+                  type="button"
+                  onClick={() => setImageUrl("")}
+                  className="absolute end-2 top-2 rounded-full bg-background/90 p-1 shadow"
+                  aria-label="Retirer l'image"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              ) : null}
+            </div>
+            <div className="flex flex-col justify-center gap-3">
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="hidden"
+                onChange={(e) => onPickFile(e.target.files?.[0] ?? null)}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                disabled={uploading}
+                onClick={() => fileRef.current?.click()}
+              >
+                {uploading ? (
+                  <>
+                    <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                    Import…
+                  </>
+                ) : (
+                  <>
+                    <ImagePlus className="me-2 h-4 w-4" />
+                    Importer depuis le PC
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                JPG, PNG ou WEBP — max ~4 Mo. L&apos;image est compressée automatiquement.
+              </p>
+              <div className="space-y-1">
+                <Label htmlFor="imageUrl" className="text-xs text-muted-foreground">
+                  Ou coller une URL
+                </Label>
+                <Input
+                  id="imageUrl"
+                  value={imageUrl.startsWith("data:") ? "" : imageUrl}
+                  placeholder="https://…"
+                  onChange={(e) => setImageUrl(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
         </div>
+
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="shortDescription">Description courte</Label>
           <Textarea id="shortDescription" name="shortDescription" defaultValue={initial?.shortDescription ?? ""} />
@@ -237,7 +328,7 @@ export function ProductForm({
         ))}
       </div>
 
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" disabled={pending || uploading}>
         {pending ? "Enregistrement…" : "Enregistrer"}
       </Button>
     </form>

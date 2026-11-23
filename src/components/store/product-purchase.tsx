@@ -71,10 +71,10 @@ export function ProductPurchase({ product }: Props) {
 
   return (
     <div className="space-y-5">
-      <div>
-        <p className="text-3xl font-semibold">{formatMoney(price)}</p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t("sku")}: <span className="font-mono">{sku}</span>
+      <div className="flex items-end justify-between gap-3">
+        <p className="text-2xl font-semibold tracking-tight md:text-3xl">{formatMoney(price)}</p>
+        <p className="text-xs text-muted-foreground">
+          {t("sku")} <span className="font-mono">{sku}</span>
         </p>
       </div>
 

@@ -48,7 +48,9 @@ export default async function LocaleLayout({
     <div lang={locale} dir={dir} className={`${display.variable} ${body.variable} min-h-screen store-gradient`}>
       <NextIntlClientProvider messages={messages}>
         <StoreHeader storeName={storeName} />
-        <main className="mx-auto min-h-[70vh] max-w-7xl px-4 py-6 md:px-6 md:py-10">{children}</main>
+        <main className="mx-auto min-h-[70vh] max-w-7xl px-4 py-0 md:px-6 md:py-0">
+          <div className="py-6 md:py-10">{children}</div>
+        </main>
         <StoreFooter storeName={storeName} />
       </NextIntlClientProvider>
     </div>
