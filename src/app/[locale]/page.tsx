@@ -43,11 +43,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <img
             src={heroSrc}
             alt={`${brand} — souk en ligne au Maroc`}
-            className="absolute inset-0 h-full w-full object-cover object-[72%_center] animate-kenburns md:object-[78%_center]"
+            className="absolute inset-0 h-full w-full object-cover object-center animate-kenburns"
             fetchPriority="high"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f1c]/90 via-[#0b1f1c]/55 to-[#0b1f1c]/15" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1f1c]/75 via-transparent to-[#0b1f1c]/25" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f1c]/88 via-[#0b1f1c]/50 to-[#0b1f1c]/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1f1c]/70 via-transparent to-[#0b1f1c]/20" />
 
           <div className="relative mx-auto flex min-h-[78vh] max-w-7xl flex-col justify-end px-4 pb-14 pt-28 md:min-h-[86vh] md:px-6 md:pb-20">
             <div className="max-w-2xl animate-fade-up space-y-6 text-white">
