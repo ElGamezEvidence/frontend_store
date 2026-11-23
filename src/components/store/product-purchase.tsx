@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { ShoppingBag } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -114,12 +115,18 @@ export function ProductPurchase({ product }: Props) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <Button size="lg" variant="outline" onClick={addToCart} className="flex-1">
-          {t("addToCart")}
-        </Button>
-        <Button size="lg" onClick={buyNow} className="flex-1">
+      <div className="flex flex-col gap-3">
+        <Button
+          size="lg"
+          onClick={buyNow}
+          className="h-14 w-full text-base font-bold tracking-wide shadow-md ring-2 ring-primary/25"
+        >
+          <ShoppingBag className="h-5 w-5" />
           {t("buyNow")}
+        </Button>
+        <p className="text-center text-xs font-medium text-muted-foreground">{t("buyNowHint")}</p>
+        <Button size="lg" variant="outline" onClick={addToCart} className="h-12 w-full">
+          {t("addToCart")}
         </Button>
       </div>
     </div>

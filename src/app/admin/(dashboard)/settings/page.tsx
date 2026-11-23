@@ -22,7 +22,7 @@ export default async function AdminSettingsPage() {
       promoBannerText: String(formData.get("promoBannerText") || "") || null,
       seoTitle: String(formData.get("seoTitle") || "") || null,
       seoDescription: String(formData.get("seoDescription") || "") || null,
-      defaultLocale: String(formData.get("defaultLocale") || "fr"),
+      defaultLocale: String(formData.get("defaultLocale") || "ar"),
       currency: "MAD",
     });
     revalidatePath("/admin/settings");

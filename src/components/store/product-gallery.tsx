@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeImage } from "@/components/ui/safe-image";
 import { cn } from "@/lib/utils";
 
@@ -17,10 +17,19 @@ export function ProductGallery({
   const [active, setActive] = useState(0);
   const current = list[Math.min(active, list.length - 1)];
 
+  useEffect(() => {
+    if (list.length < 2) return;
+    const id = window.setInterval(() => {
+      setActive((prev) => (prev + 1) % list.length);
+    }, 2000);
+    return () => window.clearInterval(id);
+  }, [list.length]);
+
   return (
     <div className="space-y-3">
       <div className="relative aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-muted md:aspect-square lg:aspect-[5/6]">
         <SafeImage
+          key={current.url || active}
           src={current.url || null}
           alt={current.alt || name}
           fill
@@ -28,6 +37,22 @@ export function ProductGallery({
           sizes="(max-width:1024px) 100vw, 50vw"
           className="object-cover animate-fade-in"
         />
+        {list.length > 1 ? (
+          <div className="absolute inset-x-0 bottom-3 flex justify-center gap-1.5">
+            {list.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                aria-label={`Image ${index + 1}`}
+                onClick={() => setActive(index)}
+                className={cn(
+                  "h-1.5 rounded-full transition-all",
+                  index === active ? "w-6 bg-white" : "w-1.5 bg-white/55 hover:bg-white/80",
+                )}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
       {list.length > 1 ? (
         <div className="flex gap-2 overflow-x-auto pb-1">

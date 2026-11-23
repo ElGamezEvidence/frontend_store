@@ -30,7 +30,12 @@ export async function StoreFooter({ storeName }: { storeName: string }) {
           <a href={`mailto:${email}`} className="block hover:text-foreground">
             {email}
           </a>
-          <a href={`tel:${phone.replace(/\s/g, "")}`} className="block hover:text-foreground">
+          <a
+            href={`tel:${phone.replace(/\s/g, "")}`}
+            className="block hover:text-foreground"
+            dir="ltr"
+            style={{ unicodeBidi: "isolate" }}
+          >
             {BRAND.phoneDisplay}
           </a>
           <p className="pt-2">

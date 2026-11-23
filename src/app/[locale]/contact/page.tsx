@@ -29,6 +29,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       value: phoneDisplay,
       href: `tel:${phone.replace(/\s/g, "")}`,
       cta: t("call"),
+      ltr: true,
     },
     {
       icon: Mail,
@@ -36,6 +37,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       value: email,
       href: `mailto:${email}`,
       cta: t("write"),
+      ltr: true,
     },
     {
       icon: MessageCircle,
@@ -43,6 +45,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       value: phoneDisplay,
       href: `https://wa.me/${whatsapp.replace(/\D/g, "")}`,
       cta: t("whatsapp"),
+      ltr: true,
     },
   ];
 
@@ -62,7 +65,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
-        {cards.map(({ icon: Icon, label, value, href, cta }) => (
+        {cards.map(({ icon: Icon, label, value, href, cta, ltr }) => (
           <a
             key={label}
             href={href}
@@ -76,7 +79,13 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
               {label}
             </p>
-            <p className="mt-2 break-all font-medium text-foreground">{value}</p>
+            <p
+              className="mt-2 break-all font-medium text-foreground"
+              dir={ltr ? "ltr" : undefined}
+              style={ltr ? { unicodeBidi: "isolate" } : undefined}
+            >
+              {value}
+            </p>
             <p className="mt-4 text-sm font-medium text-primary group-hover:underline">{cta}</p>
           </a>
         ))}

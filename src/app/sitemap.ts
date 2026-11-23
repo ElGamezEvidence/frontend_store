@@ -3,7 +3,7 @@ import { storeApi } from "@/lib/store-api";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-  const locales = ["fr", "ar", "en"];
+  const locales = ["ar", "fr", "en"];
   const staticPaths = ["", "/collections", "/about", "/contact", "/faq", "/privacy", "/terms", "/shipping-policy", "/returns"];
 
   let products: Array<Record<string, unknown>> = [];

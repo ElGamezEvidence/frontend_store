@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 const locales = [
-  { code: "fr", label: "FR" },
   { code: "ar", label: "AR" },
+  { code: "fr", label: "FR" },
   { code: "en", label: "EN" },
 ] as const;
 

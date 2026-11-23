@@ -46,7 +46,8 @@
   },
   "product": {
     "addToCart": "Ajouter au panier",
-    "buyNow": "Commander maintenant",
+    "buyNow": "Commander maintenant — paiement à la livraison",
+    "buyNowHint": "Confirmation téléphonique avant expédition · Livraison partout au Maroc",
     "sku": "SKU",
     "availability": "Disponibilité",
     "inStock": "En stock",

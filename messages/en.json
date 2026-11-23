@@ -46,7 +46,8 @@
   },
   "product": {
     "addToCart": "Add to cart",
-    "buyNow": "Buy now",
+    "buyNow": "Order now — cash on delivery",
+    "buyNowHint": "Phone confirmation before shipping · Nationwide delivery",
     "sku": "SKU",
     "availability": "Availability",
     "inStock": "In stock",
