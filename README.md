@@ -53,7 +53,7 @@ Le projet utilise **OpenNext** (`@opennextjs/cloudflare`) pour Next.js 15 sur **
    npx opennextjs-cloudflare deploy
    ```
 4. **Root directory :** `/` (racine du repo)
-5. **Node version :** `20` (ou `22`)
+5. **Node version :** `22` (fichier `.nvmrc` déjà présent — ou variable Build `NODE_VERSION=22`)
 6. Variables d’environnement (Production) :
    ```env
    NEXT_PUBLIC_API_URL=https://sunny-enchantment-production-df870c45.up.railway.app
