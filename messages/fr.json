@@ -1,6 +1,6 @@
 {
   "common": {
-    "brand": "Ghazala Store",
+    "brand": "Soukly",
     "search": "Rechercher des produits…",
     "cart": "Panier",
     "currency": "MAD",
@@ -26,8 +26,8 @@
     "cart": "Panier"
   },
   "home": {
-    "heroTitle": "Des produits utiles, livrés partout au Maroc",
-    "heroSubtitle": "Commandez en ligne, payez à la livraison. Confirmation avant expédition.",
+    "heroTitle": "Votre souk en ligne, livré partout au Maroc",
+    "heroSubtitle": "Commandez simplement, payez à la livraison. Confirmation téléphonique avant l'envoi.",
     "cta": "Voir les produits",
     "popular": "Produits populaires",
     "newArrivals": "Nouveautés",
@@ -146,8 +146,8 @@
     "rights": "Tous droits réservés."
   },
   "pages": {
-    "aboutTitle": "À propos de Ghazala Store",
-    "aboutBody": "Nous commercialisons des produits sélectionnés via un workflow d'affiliation Tajir COD au Maroc.",
+    "aboutTitle": "À propos de Soukly",
+    "aboutBody": "Soukly est une boutique marocaine COD : des produits utiles, livrés partout au Maroc, avec paiement à la livraison.",
     "contactTitle": "Contact",
     "faqTitle": "FAQ",
     "privacyTitle": "Politique de confidentialité",

@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
+import { BRAND } from "@/lib/brand";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Ghazala Store",
-    template: "%s | Ghazala Store",
+    default: BRAND.name,
+    template: `%s | ${BRAND.name}`,
   },
-  description: "Boutique e-commerce COD au Maroc — affiliation Tajir COD.",
+  description: BRAND.seoDescription,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

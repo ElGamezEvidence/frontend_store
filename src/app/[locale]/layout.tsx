@@ -35,12 +35,12 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
   const messages = await getMessages();
-  let storeName = "Ghazala Store";
+  let storeName = "Soukly";
   try {
     const settings = await storeApi.getSettings();
     storeName = String(settings.storeName || storeName);
   } catch {
-    /* backend may be offline during build */
+    /* backend may be offline — keep fallback brand */
   }
   const dir = locale === "ar" ? "rtl" : "ltr";
 

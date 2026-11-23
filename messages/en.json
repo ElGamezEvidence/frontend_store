@@ -1,6 +1,6 @@
 {
   "common": {
-    "brand": "Ghazala Store",
+    "brand": "Soukly",
     "search": "Search products…",
     "cart": "Cart",
     "currency": "MAD",
@@ -26,8 +26,8 @@
     "cart": "Cart"
   },
   "home": {
-    "heroTitle": "Useful products, delivered across Morocco",
-    "heroSubtitle": "Order online, pay on delivery. Phone confirmation before shipping.",
+    "heroTitle": "Your online souk, delivered across Morocco",
+    "heroSubtitle": "Order simply, pay on delivery. Phone confirmation before shipping.",
     "cta": "Browse products",
     "popular": "Popular products",
     "newArrivals": "New arrivals",
@@ -146,8 +146,8 @@
     "rights": "All rights reserved."
   },
   "pages": {
-    "aboutTitle": "About Ghazala Store",
-    "aboutBody": "We sell selected products through a Tajir COD affiliation workflow in Morocco.",
+    "aboutTitle": "About Soukly",
+    "aboutBody": "Soukly is a Moroccan COD shop: useful products delivered nationwide, cash on delivery.",
     "contactTitle": "Contact",
     "faqTitle": "FAQ",
     "privacyTitle": "Privacy policy",

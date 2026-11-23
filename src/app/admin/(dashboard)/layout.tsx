@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getAdminToken } from "@/lib/auth-cookie";
 import { storeApi } from "@/lib/store-api";
 import { AdminSidebar } from "@/components/admin/sidebar";
+import { BRAND } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,8 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
     const me = await storeApi.adminMe();
     email = me.user.email;
   } catch {
-    redirect("/admin/login");
+    // Clear cookie via route handler (cookies().set is not allowed in RSC)
+    redirect("/api/admin/logout");
   }
 
   return (
@@ -23,7 +25,8 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
       <div className="flex-1 overflow-auto">
         <header className="sticky top-0 z-20 border-b border-border bg-background/90 px-6 py-4 backdrop-blur">
           <p className="text-sm text-muted-foreground">
-            Connecté en tant que <span className="font-medium text-foreground">{email}</span>
+            {BRAND.adminLabel} ·{" "}
+            <span className="font-medium text-foreground">{email}</span>
           </p>
         </header>
         <div className="p-6">{children}</div>

@@ -40,7 +40,7 @@ export function AdminSidebar() {
   return (
     <aside className="flex h-full w-64 flex-col border-e border-border bg-card dark:bg-card">
       <div className="border-b border-border px-5 py-5">
-        <p className="font-display text-lg font-semibold text-primary">Ghazala Admin</p>
+        <p className="font-display text-lg font-semibold text-primary">Soukly Admin</p>
         <p className="text-xs text-muted-foreground">COD · Tajir manuel</p>
       </div>
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">

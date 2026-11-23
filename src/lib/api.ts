@@ -1,4 +1,27 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || "http://localhost:4000";
+function resolveApiUrl() {
+  const url =
+    process.env.NEXT_PUBLIC_API_URL?.trim() ||
+    process.env.API_URL?.trim() ||
+    "";
+
+  if (!url) {
+    throw new Error(
+      "API_URL / NEXT_PUBLIC_API_URL is not configured. Set it in Netlify environment variables to your Railway backend URL.",
+    );
+  }
+
+  return url.replace(/\/$/, "");
+}
+
+export function getApiUrl() {
+  return resolveApiUrl();
+}
+
+/** Prefer getApiUrl() at call-time so runtime env is read correctly. */
+export const API_URL =
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
+  process.env.API_URL?.replace(/\/$/, "") ||
+  "";
 
 type FetchOptions = RequestInit & {
   token?: string | null;
@@ -13,6 +36,7 @@ export class ApiError extends Error {
 }
 
 export async function apiFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
+  const base = getApiUrl();
   const headers = new Headers(options.headers || {});
   if (!headers.has("Content-Type") && options.body) {
     headers.set("Content-Type", "application/json");
@@ -21,11 +45,16 @@ export async function apiFetch<T>(path: string, options: FetchOptions = {}): Pro
     headers.set("Authorization", `Bearer ${options.token}`);
   }
 
-  const res = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers,
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${base}${path}`, {
+      ...options,
+      headers,
+      cache: "no-store",
+    });
+  } catch {
+    throw new ApiError(503, "BACKEND_UNREACHABLE");
+  }
 
   if (!res.ok) {
     let message = `HTTP_${res.status}`;
@@ -41,5 +70,3 @@ export async function apiFetch<T>(path: string, options: FetchOptions = {}): Pro
   if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
 }
-
-export { API_URL };

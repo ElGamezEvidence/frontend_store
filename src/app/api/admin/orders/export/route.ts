@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { API_URL } from "@/lib/api";
+import { getApiUrl } from "@/lib/api";
 import { getAdminToken } from "@/lib/auth-cookie";
 
 export async function GET(request: NextRequest) {
@@ -15,10 +15,18 @@ export async function GET(request: NextRequest) {
     if (value) qs.set(key, value);
   }
 
-  const res = await fetch(`${API_URL}/api/orders/export/excel?${qs.toString()}`, {
+  let apiUrl: string;
+  try {
+    apiUrl = getApiUrl();
+  } catch {
+    return NextResponse.json({ error: "API_URL_NOT_CONFIGURED" }, { status: 500 });
+  }
+
+  const res = await fetch(`${apiUrl}/api/orders/export/excel?${qs.toString()}`, {
     headers: { Authorization: `Bearer ${token}` },
     cache: "no-store",
   });
+
 
   if (!res.ok) {
     const text = await res.text();
