@@ -3,17 +3,21 @@ import { storeApi } from "@/lib/store-api";
 import { formatMoney } from "@/lib/utils";
 import { toNumber } from "@/lib/money";
 import { Badge } from "@/components/ui/badge";
+import { ExportOrdersButton } from "@/components/admin/export-orders-button";
 
 export default async function TajirQueuePage() {
   const result = await storeApi.adminOrders("?pendingTajir=1&pageSize=50");
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-3xl font-semibold">Commandes à envoyer à Tajir COD</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {result.total} commande(s) en attente. La copie ne marque pas comme transmis.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl font-semibold">Commandes à envoyer à Tajir COD</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {result.total} commande(s) en attente. La copie ne marque pas comme transmis.
+          </p>
+        </div>
+        <ExportOrdersButton pendingTajir label="Exporter file Tajir (Excel)" />
       </div>
 
       {result.items.length === 0 ? (

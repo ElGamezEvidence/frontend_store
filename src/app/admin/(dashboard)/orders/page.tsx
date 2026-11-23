@@ -3,6 +3,7 @@ import { storeApi } from "@/lib/store-api";
 import { formatMoney } from "@/lib/utils";
 import { toNumber } from "@/lib/money";
 import { Badge } from "@/components/ui/badge";
+import { ExportOrdersButton } from "@/components/admin/export-orders-button";
 
 export default async function AdminOrdersPage({
   searchParams,
@@ -21,15 +22,18 @@ export default async function AdminOrdersPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-3xl font-semibold">Commandes</h1>
-        <form className="flex gap-2">
-          <input
-            name="q"
-            defaultValue={sp.q}
-            placeholder="Recherche globale…"
-            className="h-10 rounded-xl border border-border bg-background px-3 text-sm"
-          />
-          <button className="rounded-xl bg-primary px-4 text-sm text-primary-foreground">Rechercher</button>
-        </form>
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportOrdersButton status={sp.status} q={sp.q} />
+          <form className="flex gap-2">
+            <input
+              name="q"
+              defaultValue={sp.q}
+              placeholder="Recherche globale…"
+              className="h-10 rounded-xl border border-border bg-background px-3 text-sm"
+            />
+            <button className="rounded-xl bg-primary px-4 text-sm text-primary-foreground">Rechercher</button>
+          </form>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-2xl border border-border">
