@@ -41,13 +41,30 @@ NEXT_PUBLIC_APP_URL=https://your-frontend.netlify.app
 
 Le backend doit autoriser ce frontend via `CORS_ORIGIN`.
 
-## Déploiement Netlify
+## Déploiement (recommandé : Vercel)
+
+Next.js est mieux supporté sur Vercel. Si Netlify renvoie des HTTP 500 au deploy (`___netlify-server-handler`), utilise Vercel :
+
+1. Importer le repo `frontend_store` sur [vercel.com](https://vercel.com).
+2. Framework preset : **Next.js**.
+3. Variables d’environnement :
+   ```env
+   NEXT_PUBLIC_API_URL=https://TON-BACKEND.railway.app
+   API_URL=https://TON-BACKEND.railway.app
+   NEXT_PUBLIC_APP_URL=https://TON-PROJET.vercel.app
+   ```
+4. Deploy.
+
+N’oublie pas d’ajouter l’URL Vercel dans `CORS_ORIGIN` du backend Railway.
+
+## Déploiement Netlify (alternatif)
 
 1. Connecter le repo `frontend_store`.
 2. **Ne pas** mettre Publish directory = `.next` dans l’UI (laisser vide / géré par le plugin).
 3. Build command : `npm run build` (déjà dans `netlify.toml`).
 4. Ajouter les 3 variables d’environnement ci-dessus.
-5. Si un deploy échoue avec HTTP 500 sur edge functions : **Clear cache and deploy site**.
+5. Si HTTP 500 sur upload de functions : **Clear cache and deploy site**, puis réessayer.
+   Ce type d’erreur vient de Netlify (infra), pas du code.
 
 ## Export Excel commandes
 
