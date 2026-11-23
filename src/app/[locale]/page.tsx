@@ -6,7 +6,7 @@ import { ProductCard } from "@/components/store/product-card";
 import { Button } from "@/components/ui/button";
 
 const HERO_FALLBACK =
-  "https://images.unsplash.com/photo-1556745753-b2904692e6c6?auto=format&fit=crop&w=1800&q=80";
+  "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1800&q=80";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
