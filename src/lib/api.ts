@@ -2,30 +2,33 @@
 const PRODUCTION_API_URL =
   "https://sunny-enchantment-production-df870c45.up.railway.app";
 
+function normalizeApiUrl(raw: string) {
+  let url = raw.trim().replace(/\/$/, "");
+  if (!url) return "";
+  if (!/^https?:\/\//i.test(url)) {
+    url = `https://${url}`;
+  }
+  return url.replace(/\/$/, "");
+}
+
 function resolveApiUrl() {
   const configured =
     process.env.NEXT_PUBLIC_API_URL?.trim() ||
     process.env.API_URL?.trim() ||
     "";
 
-  const cleaned = configured.replace(/\/$/, "");
+  const cleaned = normalizeApiUrl(configured);
 
-  // Prefer the live Railway host when env is missing, local, or points elsewhere.
-  // Netlify currently has a stale/wrong API_URL that caused BACKEND_UNREACHABLE.
   const onNetlify = Boolean(process.env.NETLIFY || process.env.CONTEXT);
   if (onNetlify || process.env.NODE_ENV === "production") {
-    if (
-      !cleaned ||
-      /localhost|127\.0\.0\.1/.test(cleaned) ||
-      !cleaned.includes("sunny-enchantment-production")
-    ) {
+    if (!cleaned || /localhost|127\.0\.0\.1/.test(cleaned)) {
       return PRODUCTION_API_URL;
     }
   }
 
   if (!cleaned) {
     throw new Error(
-      "API_URL / NEXT_PUBLIC_API_URL is not configured. Set it in Netlify environment variables to your Railway backend URL.",
+      "API_URL / NEXT_PUBLIC_API_URL is not configured. Set it in Netlify environment variables to your Railway backend URL (including https://).",
     );
   }
 
@@ -37,10 +40,11 @@ export function getApiUrl() {
 }
 
 /** Prefer getApiUrl() at call-time so runtime env is read correctly. */
-export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
-  process.env.API_URL?.replace(/\/$/, "") ||
-  PRODUCTION_API_URL;
+export const API_URL = normalizeApiUrl(
+  process.env.NEXT_PUBLIC_API_URL ||
+    process.env.API_URL ||
+    PRODUCTION_API_URL,
+);
 
 type FetchOptions = RequestInit & {
   token?: string | null;

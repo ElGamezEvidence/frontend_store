@@ -34,16 +34,8 @@ export async function POST(request: Request) {
       body: JSON.stringify({ email, password }),
       cache: "no-store",
     });
-  } catch (err) {
-    const detail = err instanceof Error ? err.message : String(err);
-    return NextResponse.json(
-      {
-        error: "BACKEND_UNREACHABLE",
-        apiUrl,
-        detail,
-      },
-      { status: 503 },
-    );
+  } catch {
+    return NextResponse.json({ error: "BACKEND_UNREACHABLE" }, { status: 503 });
   }
 
   const data = await res.json().catch(() => ({}));
