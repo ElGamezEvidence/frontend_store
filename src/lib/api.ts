@@ -1,16 +1,35 @@
+/** Known healthy Railway production API for Soukly. */
+const PRODUCTION_API_URL =
+  "https://sunny-enchantment-production-df870c45.up.railway.app";
+
 function resolveApiUrl() {
-  const url =
+  const configured =
     process.env.NEXT_PUBLIC_API_URL?.trim() ||
     process.env.API_URL?.trim() ||
     "";
 
-  if (!url) {
+  const cleaned = configured.replace(/\/$/, "");
+
+  // Prefer the live Railway host when env is missing, local, or points elsewhere.
+  // Netlify currently has a stale/wrong API_URL that caused BACKEND_UNREACHABLE.
+  const onNetlify = Boolean(process.env.NETLIFY || process.env.CONTEXT);
+  if (onNetlify || process.env.NODE_ENV === "production") {
+    if (
+      !cleaned ||
+      /localhost|127\.0\.0\.1/.test(cleaned) ||
+      !cleaned.includes("sunny-enchantment-production")
+    ) {
+      return PRODUCTION_API_URL;
+    }
+  }
+
+  if (!cleaned) {
     throw new Error(
       "API_URL / NEXT_PUBLIC_API_URL is not configured. Set it in Netlify environment variables to your Railway backend URL.",
     );
   }
 
-  return url.replace(/\/$/, "");
+  return cleaned;
 }
 
 export function getApiUrl() {
@@ -21,7 +40,7 @@ export function getApiUrl() {
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
   process.env.API_URL?.replace(/\/$/, "") ||
-  "";
+  PRODUCTION_API_URL;
 
 type FetchOptions = RequestInit & {
   token?: string | null;
