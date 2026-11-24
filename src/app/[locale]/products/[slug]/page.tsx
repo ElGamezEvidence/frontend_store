@@ -109,7 +109,7 @@ export default async function ProductPage({
           <div className="grid gap-3 sm:grid-cols-3">
             {[
               { icon: ShieldCheck, label: t("inStock") },
-              { icon: Truck, label: "COD Maroc" },
+              { icon: Truck, label: t("freeShipping") },
               { icon: PhoneCall, label: "Confirm. tel." },
             ].map(({ icon: Icon, label }) => (
               <div

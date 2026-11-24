@@ -77,7 +77,7 @@ export default function CartPage() {
           <span>{t("cart.subtotal")}</span>
           <span className="font-semibold">{formatMoney(subtotal())}</span>
         </div>
-        <p className="mt-2 text-xs text-muted-foreground">{t("cart.shippingEstimate")}: calculé au checkout</p>
+        <p className="mt-2 text-xs font-medium text-primary">{t("cart.shippingEstimate")}</p>
         <div className="mt-4 flex justify-between border-t border-border pt-4 text-base font-semibold">
           <span>{t("cart.total")}</span>
           <span>{formatMoney(subtotal())}</span>

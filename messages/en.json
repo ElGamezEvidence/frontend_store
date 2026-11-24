@@ -47,7 +47,7 @@
   "product": {
     "addToCart": "Add to cart",
     "buyNow": "Order now — cash on delivery",
-    "buyNowHint": "Phone confirmation before shipping · Nationwide delivery",
+    "buyNowHint": "Phone confirmation before shipping · Free nationwide delivery",
     "sku": "SKU",
     "availability": "Availability",
     "inStock": "In stock",
@@ -58,13 +58,14 @@
     "similar": "Similar products",
     "reviews": "Reviews",
     "description": "Description",
-    "discount": "off"
+    "discount": "off",
+    "freeShipping": "Free shipping"
   },
   "cart": {
     "title": "Your cart",
     "empty": "Your cart is empty",
     "subtotal": "Subtotal",
-    "shippingEstimate": "Estimated shipping",
+    "shippingEstimate": "Free shipping",
     "total": "Total",
     "checkout": "Checkout",
     "remove": "Remove",
@@ -87,7 +88,8 @@
     "paymentCod": "Cash on delivery (COD)",
     "placeOrder": "Place order",
     "summary": "Order summary",
-    "shipping": "Shipping"
+    "shipping": "Shipping",
+    "shippingFree": "Free"
   },
   "order": {
     "confirmationTitle": "Order confirmed",

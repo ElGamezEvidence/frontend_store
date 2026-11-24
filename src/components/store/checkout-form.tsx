@@ -238,7 +238,9 @@ export function CheckoutForm({ zones }: { zones: Zone[] }) {
           </div>
           <div className="flex justify-between">
             <span>{t("checkout.shipping")}</span>
-            <span>{formatMoney(shippingFee)}</span>
+            <span className={shippingFee === 0 ? "font-medium text-primary" : undefined}>
+              {shippingFee === 0 ? t("checkout.shippingFree") : formatMoney(shippingFee)}
+            </span>
           </div>
           <div className="flex justify-between text-base font-semibold">
             <span>{t("cart.total")}</span>

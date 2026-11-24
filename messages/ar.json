@@ -47,7 +47,7 @@
   "product": {
     "addToCart": "أضف إلى السلة",
     "buyNow": "اطلب الآن — الدفع عند الاستلام",
-    "buyNowHint": "تأكيد هاتفي قبل الشحن · توصيل لكل المدن",
+    "buyNowHint": "تأكيد هاتفي قبل الشحن · توصيل مجاني لكل المدن",
     "sku": "رمز المنتج",
     "availability": "التوفر",
     "inStock": "متوفر",
@@ -58,13 +58,14 @@
     "similar": "منتجات مشابهة",
     "reviews": "التقييمات",
     "description": "الوصف",
-    "discount": "خصم"
+    "discount": "خصم",
+    "freeShipping": "توصيل مجاني"
   },
   "cart": {
     "title": "سلتك",
     "empty": "سلتك فارغة",
     "subtotal": "المجموع الفرعي",
-    "shippingEstimate": "تقدير التوصيل",
+    "shippingEstimate": "التوصيل مجاني",
     "total": "الإجمالي",
     "checkout": "إتمام الطلب",
     "remove": "إزالة",
@@ -87,7 +88,8 @@
     "paymentCod": "الدفع عند الاستلام",
     "placeOrder": "تأكيد الطلب",
     "summary": "ملخص الطلب",
-    "shipping": "التوصيل"
+    "shipping": "التوصيل",
+    "shippingFree": "مجاني"
   },
   "order": {
     "confirmationTitle": "تم تأكيد الطلب",

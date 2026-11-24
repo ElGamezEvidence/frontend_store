@@ -47,7 +47,7 @@
   "product": {
     "addToCart": "Ajouter au panier",
     "buyNow": "Commander maintenant — paiement à la livraison",
-    "buyNowHint": "Confirmation téléphonique avant expédition · Livraison partout au Maroc",
+    "buyNowHint": "Confirmation téléphonique avant expédition · Livraison gratuite partout au Maroc",
     "sku": "SKU",
     "availability": "Disponibilité",
     "inStock": "En stock",
@@ -58,13 +58,14 @@
     "similar": "Produits similaires",
     "reviews": "Avis",
     "description": "Description",
-    "discount": "de réduction"
+    "discount": "de réduction",
+    "freeShipping": "Livraison gratuite"
   },
   "cart": {
     "title": "Votre panier",
     "empty": "Votre panier est vide",
     "subtotal": "Sous-total",
-    "shippingEstimate": "Livraison estimée",
+    "shippingEstimate": "Livraison gratuite",
     "total": "Total",
     "checkout": "Passer commande",
     "remove": "Retirer",
@@ -87,7 +88,8 @@
     "paymentCod": "Paiement à la livraison (COD)",
     "placeOrder": "Confirmer la commande",
     "summary": "Récapitulatif",
-    "shipping": "Livraison"
+    "shipping": "Livraison",
+    "shippingFree": "Gratuit"
   },
   "order": {
     "confirmationTitle": "Commande confirmée",
