@@ -195,13 +195,16 @@ export function ProductForm({
       isOnSale: formData.get("isOnSale") === "on",
       categoryIds,
       images: ordered,
-      variants: variants.map((v, index) => ({
-        ...v,
-        name: v.name,
-        sku: v.sku,
-        isAvailable: v.isAvailable ?? true,
-        sortOrder: index,
-      })),
+      // Ignore incomplete rows (empty name/SKU) — variants are optional
+      variants: variants
+        .filter((v) => v.name.trim() && v.sku.trim())
+        .map((v, index) => ({
+          ...v,
+          name: v.name.trim(),
+          sku: v.sku.trim(),
+          isAvailable: v.isAvailable ?? true,
+          sortOrder: index,
+        })),
     };
 
     startTransition(async () => {
@@ -443,8 +446,13 @@ export function ProductForm({
       </div>
 
       <div className="space-y-3 rounded-2xl border border-border p-4">
-        <div className="flex items-center justify-between">
-          <h3 className="font-medium">Variantes (SKU Tajir)</h3>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h3 className="font-medium">Variantes (SKU Tajir)</h3>
+            <p className="text-xs text-muted-foreground">
+              Optionnel. Laisse vide si le produit n’a qu’un seul SKU principal.
+            </p>
+          </div>
           <Button
             type="button"
             variant="outline"
@@ -460,7 +468,7 @@ export function ProductForm({
           </Button>
         </div>
         {variants.map((variant, index) => (
-          <div key={index} className="grid gap-2 md:grid-cols-3">
+          <div key={index} className="grid gap-2 md:grid-cols-[1fr_1fr_1fr_auto]">
             <Input
               placeholder="Nom (ex: Rose)"
               value={variant.name}
@@ -494,6 +502,17 @@ export function ProductForm({
                 )
               }
             />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Supprimer variante"
+              onClick={() =>
+                setVariants((prev) => prev.filter((_, i) => i !== index))
+              }
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </div>
         ))}
       </div>
