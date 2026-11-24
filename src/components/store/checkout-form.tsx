@@ -25,8 +25,8 @@ type Zone = {
   pickupAvailable: boolean;
 };
 
-const DEFAULT_HOME_FEE = 35;
-const DEFAULT_PICKUP_FEE = 30;
+const DEFAULT_HOME_FEE = 0;
+const DEFAULT_PICKUP_FEE = 0;
 
 export function CheckoutForm({ zones }: { zones: Zone[] }) {
   const t = useTranslations();
