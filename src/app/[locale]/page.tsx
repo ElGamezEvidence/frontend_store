@@ -20,9 +20,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     storeApi.getCategories().catch(() => [] as Array<Record<string, unknown>>),
   ]);
 
-  // Always use the brand teal/gold cover (ignore outdated festive/red settings).
+  // Brand cover — always local (ignores outdated festive settings).
   const heroSrc = HERO_COVER;
-  const brand = String(settings?.storeName ?? t("common.brand"));
+  const brand =
+    locale === "ar"
+      ? t("common.brand")
+      : String(settings?.storeName || t("common.brand"));
+  // Prefer locale messages so Arabic never shows French CMS copy.
+  const heroTitle = t("home.heroTitle");
+  const heroSubtitle = t("home.heroSubtitle");
   const benefits = [
     { icon: ShieldCheck, label: t("home.benefit1") },
     { icon: Truck, label: t("home.benefit2") },
@@ -37,13 +43,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           {/* Native img avoids Next image optimizer failures on some CDNs */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={heroSrc}
-            alt={`${brand} — souk en ligne au Maroc`}
-            className="absolute inset-0 h-full w-full object-cover object-center animate-kenburns"
+            src={`${heroSrc}?v=2`}
+            alt={heroTitle}
+            className="absolute inset-0 h-full w-full object-cover object-[35%_center] md:object-center animate-kenburns"
             fetchPriority="high"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f1c]/88 via-[#0b1f1c]/50 to-[#0b1f1c]/20" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1f1c]/70 via-transparent to-[#0b1f1c]/20" />
+          {/* Dark overlay behind copy: left in LTR, right in RTL (Arabic) */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f1c]/90 via-[#0b1f1c]/55 to-[#0b1f1c]/25 rtl:bg-gradient-to-l" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1f1c]/75 via-transparent to-[#0b1f1c]/25" />
 
           <div className="relative mx-auto flex min-h-[78vh] max-w-7xl flex-col justify-end px-4 pb-14 pt-28 md:min-h-[86vh] md:px-6 md:pb-20">
             <div className="max-w-2xl animate-fade-up space-y-6 text-white">
@@ -51,10 +58,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 {brand}
               </p>
               <h1 className="max-w-xl text-xl font-medium leading-snug text-white/92 md:text-2xl">
-                {String(settings?.heroTitle || t("home.heroTitle"))}
+                {heroTitle}
               </h1>
               <p className="max-w-lg text-base text-white/75 md:text-lg">
-                {String(settings?.heroSubtitle || t("home.heroSubtitle"))}
+                {heroSubtitle}
               </p>
               <div className="flex flex-wrap gap-3 pt-1">
                 <Button asChild size="lg" className="bg-white text-[#0b1f1c] hover:bg-white/90">

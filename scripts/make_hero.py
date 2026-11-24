@@ -1,109 +1,115 @@
-"""Build a photographic Soukly hero: teal / forest green + soft gold."""
+"""Clean Soukly hero: soft teal atmosphere, no posterization."""
 from __future__ import annotations
 
 import math
 import os
-import urllib.request
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageOps
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-PUBLIC = os.path.join(ROOT, "public")
-OUT = os.path.join(PUBLIC, "hero-soukly.jpg")
-SRC = os.path.join(PUBLIC, "_hero_src.jpg")
-
-SRC_URL = (
-    "https://images.unsplash.com/photo-1513885535751-8b9238bd345a"
-    "?auto=format&fit=crop&w=2400&q=85"
-)
+OUT = os.path.join(ROOT, "public", "hero-soukly.jpg")
 
 
-def download() -> Image.Image:
-    if not os.path.exists(SRC) or os.path.getsize(SRC) < 50_000:
-        urllib.request.urlretrieve(SRC_URL, SRC)
-    return Image.open(SRC).convert("RGB")
-
-
-def remap_to_soukly(img: Image.Image) -> Image.Image:
-    img = ImageOps.exif_transpose(img)
+def build() -> Image.Image:
     w, h = 2400, 1350
-    img = ImageOps.fit(img, (w, h), method=Image.Resampling.LANCZOS)
+    img = Image.new("RGB", (w, h))
     px = img.load()
 
-    for y in range(h):
-        for x in range(w):
-            r, g, b = px[x, y]
-            mx = max(r, g, b)
-            mn = min(r, g, b)
-            sat = (mx - mn) / (mx + 1e-6)
-            lum = 0.2126 * r + 0.7152 * g + 0.0722 * b
-
-            # Reds / pinks / berries → rich teal/emerald (keep luminance)
-            if r > g + 18 and r > b + 10 and sat > 0.12:
-                # map luminance into teal channel mix
-                t = lum / 255
-                nr = int(8 + 55 * t + 10 * (g / 255))
-                ng = int(40 + 140 * t)
-                nb = int(36 + 110 * t)
-                # soft gold ribbon highlights when very bright
-                if lum > 200:
-                    nr = int(nr * 0.7 + 210 * 0.3)
-                    ng = int(ng * 0.7 + 180 * 0.3)
-                    nb = int(nb * 0.75 + 90 * 0.25)
-                px[x, y] = (
-                    max(0, min(255, nr)),
-                    max(0, min(255, ng)),
-                    max(0, min(255, nb)),
-                )
-                continue
-
-            # Soft cool cast on neutrals toward teal
-            if sat < 0.12:
-                nr = int(r * 0.86 + 18)
-                ng = int(g * 0.92 + 28)
-                nb = int(b * 0.90 + 26)
-                px[x, y] = (
-                    max(0, min(255, nr)),
-                    max(0, min(255, ng)),
-                    max(0, min(255, nb)),
-                )
-
-    # Light brand wash (not a heavy overlay)
-    wash = Image.new("RGB", (w, h))
-    wp = wash.load()
+    # Soft photographic teal gradient (readable for white RTL text on the start side)
     for y in range(h):
         t = y / (h - 1)
         for x in range(w):
             u = x / (w - 1)
-            gold = max(0.0, 1 - math.hypot(u - 0.8, t - 0.2) / 0.75) ** 2
-            wp[x, y] = (
-                min(255, int(20 + 70 * gold + 10 * (1 - t))),
-                min(255, int(55 + 45 * gold + 20 * (1 - t))),
-                min(255, int(48 + 8 * gold + 12 * (1 - t))),
+            # base forest → mid teal
+            r = int(10 + 22 * (1 - t) + 8 * u)
+            g = int(36 + 48 * (1 - t * 0.55) + 10 * (1 - u))
+            b = int(32 + 36 * (1 - t * 0.65))
+            # warm gold bloom top-right (image side for RTL: text is on the right)
+            gold = max(0.0, 1 - math.hypot(u - 0.78, t - 0.22) / 0.62) ** 2
+            r = min(255, int(r + 110 * gold))
+            g = min(255, int(g + 78 * gold))
+            b = min(255, int(b + 18 * gold))
+            # soft aqua glow bottom-left
+            aqua = max(0.0, 1 - math.hypot(u - 0.18, t - 0.82) / 0.55) ** 2
+            r = min(255, int(r + 12 * aqua))
+            g = min(255, int(g + 40 * aqua))
+            b = min(255, int(b + 36 * aqua))
+            px[x, y] = (r, g, b)
+
+    # Subtle Moroccan lattice (very soft)
+    lattice = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    ld = ImageDraw.Draw(lattice)
+    step = 100
+    for y in range(40, h - 40, step):
+        for x in range(40, w - 40, step):
+            cx = x + ((y // step) % 2) * (step // 2)
+            cy = y
+            ld.polygon(
+                [(cx, cy - 22), (cx + 22, cy), (cx, cy + 22), (cx - 22, cy)],
+                outline=(212, 175, 80, 22),
             )
+    lattice = lattice.filter(ImageFilter.GaussianBlur(0.8))
+    img = Image.alpha_composite(img.convert("RGBA"), lattice).convert("RGB")
 
-    img = Image.blend(img, wash, 0.16)
-    img = ImageEnhance.Color(img).enhance(1.05)
-    img = ImageEnhance.Contrast(img).enhance(1.08)
-    img = ImageEnhance.Brightness(img).enhance(1.04)
+    # Soft gift parcels on the LEFT (visual weight), keep RIGHT clearer for Arabic text
+    parcels = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    pd = ImageDraw.Draw(parcels)
+    boxes = [
+        (180, 520, 560, 220, 36, (236, 228, 210, 205)),
+        (280, 360, 500, 200, 32, (22, 78, 68, 215)),
+        (360, 230, 440, 170, 28, (198, 168, 96, 200)),
+        (460, 120, 380, 140, 24, (245, 240, 230, 190)),
+    ]
+    for x, y, bw, bh, rad, fill in boxes:
+        pd.rounded_rectangle([x, y, x + bw, y + bh], radius=rad, fill=fill)
+        mid = y + bh // 2
+        pd.rectangle([x, mid - 7, x + bw, mid + 7], fill=(212, 175, 80, 150))
+        pd.rectangle([x + bw // 2 - 7, y, x + bw // 2 + 7, y + bh], fill=(212, 175, 80, 130))
 
-    # Gentle left-side darkening for text legibility
+    # Soft leaf accents
+    for lx, ly, ang, sc, a in [
+        (820, 880, -20, 1.1, 55),
+        (900, 960, 18, 0.9, 45),
+        (200, 980, 30, 1.0, 40),
+    ]:
+        pts = []
+        for deg in list(range(0, 180, 10)) + list(range(180, 360, 10)):
+            rad = math.radians(deg)
+            px_ = math.cos(rad) * 150 * sc
+            py_ = math.sin(rad) * 42 * sc
+            ar = math.radians(ang)
+            rx = px_ * math.cos(ar) - py_ * math.sin(ar)
+            ry = px_ * math.sin(ar) + py_ * math.cos(ar)
+            pts.append((lx + rx, ly + ry))
+        pd.polygon(pts, fill=(34, 95, 80, a))
+
+    parcels = parcels.filter(ImageFilter.GaussianBlur(1.8))
+    img = Image.alpha_composite(img.convert("RGBA"), parcels).convert("RGB")
+
+    # Gentle vignette — stronger on left (image), lighter on right (Arabic copy)
     shade = Image.new("L", (w, h), 0)
     sd = ImageDraw.Draw(shade)
-    for i in range(0, 1100, 8):
-        alpha = int(max(0, 160 - i * 0.14))
-        sd.rectangle([i, 0, i + 8, h], fill=alpha)
-    shade = shade.filter(ImageFilter.GaussianBlur(40))
-    dark = Image.new("RGB", (w, h), (8, 24, 22))
+    for i in range(0, 900, 10):
+        alpha = int(max(0, 90 - i * 0.08))
+        sd.rectangle([i, 0, i + 10, h], fill=alpha)
+    shade = shade.filter(ImageFilter.GaussianBlur(50))
+    dark = Image.new("RGB", (w, h), (8, 22, 20))
     img = Image.composite(img, dark, ImageOps.invert(shade))
 
+    # Light film grain (subtle)
+    grain = Image.effect_noise((w, h), 12).convert("L")
+    grain_rgb = Image.merge("RGB", (grain, grain, grain))
+    img = Image.blend(img, grain_rgb, 0.03)
+
+    img = ImageEnhance.Color(img).enhance(1.04)
+    img = ImageEnhance.Contrast(img).enhance(1.05)
+    img = ImageEnhance.Brightness(img).enhance(1.02)
     return img
 
 
 def main() -> None:
-    photo = download()
-    out = remap_to_soukly(photo)
-    out.save(OUT, "JPEG", quality=92, optimize=True)
+    out = build()
+    out.save(OUT, "JPEG", quality=92, optimize=True, progressive=True)
     print("wrote", OUT, os.path.getsize(OUT))
 
 
