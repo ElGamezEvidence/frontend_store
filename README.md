@@ -46,12 +46,18 @@ Le projet utilise **OpenNext** (`@opennextjs/cloudflare`) pour Next.js 15 sur **
 1. Connecter le repo `ElGamezEvidence/frontend_store`, branche `main`.
 2. **Build command :**
    ```bash
-   npm run build
+   npx opennextjs-cloudflare build
    ```
-   (`next build` puis adaptation OpenNext avec `--skipNextBuild` — pas de boucle)
 3. **Deploy command :**
    ```bash
    npx wrangler deploy
+   ```
+4. Le Worker Cloudflare doit s’appeler **`yoursouk`** (déjà aligné dans `wrangler.jsonc`).
+5. Variables (avec `https://`) :
+   ```env
+   NEXT_PUBLIC_API_URL=https://sunny-enchantment-production-df870c45.up.railway.app
+   API_URL=https://sunny-enchantment-production-df870c45.up.railway.app
+   NEXT_PUBLIC_APP_URL=https://yoursouk.<ton-sous-domaine>.workers.dev
    ```
 4. **Root directory :** `/` (racine du repo)
 5. **Node version :** `22` (fichier `.nvmrc` déjà présent — ou variable Build `NODE_VERSION=22`)
