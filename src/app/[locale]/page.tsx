@@ -39,35 +39,41 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   return (
     <div className="space-y-20 md:space-y-28">
       <section className="relative -mx-4 w-[calc(100%+2rem)] md:-mx-6 md:w-[calc(100%+3rem)] lg:left-1/2 lg:w-screen lg:max-w-[100vw] lg:-translate-x-1/2 lg:mx-0">
-        <div className="relative min-h-[78vh] overflow-hidden md:min-h-[86vh]">
-          {/* Native img avoids Next image optimizer failures on some CDNs */}
+        <div className="relative min-h-[82vh] overflow-hidden bg-[#0f2f2a] md:min-h-[88vh]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`${heroSrc}?v=2`}
-            alt={heroTitle}
-            className="absolute inset-0 h-full w-full object-cover object-[35%_center] md:object-center animate-kenburns"
+            src={`${heroSrc}?v=4`}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full object-cover object-center animate-kenburns"
             fetchPriority="high"
           />
-          {/* Dark overlay behind copy: left in LTR, right in RTL (Arabic) */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f1c]/90 via-[#0b1f1c]/55 to-[#0b1f1c]/25 rtl:bg-gradient-to-l" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1f1c]/75 via-transparent to-[#0b1f1c]/25" />
+          <div
+            className="absolute inset-0 opacity-40"
+            style={{
+              backgroundImage: "url(/hero-pattern.svg)",
+              backgroundSize: "96px 96px",
+            }}
+          />
+          <div className="absolute inset-0 bg-[#0b1f1c]/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1f1c]/92 via-[#0b1f1c]/45 to-[#0b1f1c]/55" />
 
-          <div className="relative mx-auto flex min-h-[78vh] max-w-7xl flex-col justify-end px-4 pb-14 pt-28 md:min-h-[86vh] md:px-6 md:pb-20">
-            <div className="max-w-2xl animate-fade-up space-y-6 text-white">
-              <p className="font-display text-4xl font-semibold tracking-tight md:text-6xl lg:text-7xl">
+          <div className="relative mx-auto flex min-h-[82vh] max-w-7xl flex-col items-center justify-center px-4 py-28 text-center md:min-h-[88vh]">
+            <div className="max-w-3xl animate-fade-up space-y-5 text-white md:space-y-6">
+              <p className="font-display text-5xl font-semibold tracking-tight drop-shadow-sm md:text-7xl lg:text-8xl">
                 {brand}
               </p>
-              <h1 className="max-w-xl text-xl font-medium leading-snug text-white/92 md:text-2xl">
+              <h1 className="text-lg font-medium leading-snug text-white/92 md:text-2xl">
                 {heroTitle}
               </h1>
-              <p className="max-w-lg text-base text-white/75 md:text-lg">
+              <p className="mx-auto max-w-xl text-sm text-white/75 md:text-lg">
                 {heroSubtitle}
               </p>
-              <div className="flex flex-wrap gap-3 pt-1">
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                 <Button asChild size="lg" className="bg-white text-[#0b1f1c] hover:bg-white/90">
                   <Link href="/collections">
                     {t("home.cta")}
-                    <ArrowRight className="ms-2 h-4 w-4" />
+                    <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180" />
                   </Link>
                 </Button>
                 <Button
@@ -76,7 +82,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   variant="outline"
                   className="border-white/40 bg-white/5 text-white hover:bg-white/10 hover:text-white"
                 >
-                  <Link href="/cart">{t("nav.cart")}</Link>
+                  <Link href="/collections">{t("common.viewAll")}</Link>
                 </Button>
               </div>
             </div>
