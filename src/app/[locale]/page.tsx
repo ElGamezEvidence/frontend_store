@@ -20,12 +20,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     storeApi.getCategories().catch(() => [] as Array<Record<string, unknown>>),
   ]);
 
-  // Prefer dedicated cover (never fall back to a random product image).
-  const configured = String(settings?.heroImageUrl || "").trim();
-  const heroSrc =
-    configured && !configured.includes("photo-1608571423902") && !configured.includes("photo-1556745753")
-      ? configured
-      : HERO_COVER;
+  // Always use the brand teal/gold cover (ignore outdated festive/red settings).
+  const heroSrc = HERO_COVER;
   const brand = String(settings?.storeName ?? t("common.brand"));
   const benefits = [
     { icon: ShieldCheck, label: t("home.benefit1") },

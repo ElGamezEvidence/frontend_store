@@ -14,3 +14,6 @@ out
 *.tsbuildinfo
 next-env.d.ts
 cloudflare-env.d.ts
+public/_hero_src.jpg
+public/cand-*.jpg
+public/hero-src-*.jpg
