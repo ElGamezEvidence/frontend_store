@@ -45,7 +45,11 @@ export default async function LocaleLayout({
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
-    <div lang={locale} dir={dir} className={`${display.variable} ${body.variable} min-h-screen store-gradient`}>
+    <div
+      lang={locale}
+      dir={dir}
+      className={`${display.variable} ${body.variable} min-h-screen overflow-x-hidden store-gradient`}
+    >
       <NextIntlClientProvider messages={messages}>
         <StoreHeader storeName={storeName} />
         <main className="mx-auto min-h-[70vh] max-w-7xl px-4 py-0 md:px-6 md:py-0">

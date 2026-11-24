@@ -38,7 +38,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <div className="space-y-20 md:space-y-28">
-      <section className="relative -mx-4 w-[calc(100%+2rem)] md:-mx-6 md:w-[calc(100%+3rem)] lg:left-1/2 lg:w-screen lg:max-w-[100vw] lg:-translate-x-1/2 lg:mx-0">
+      <section className="full-bleed -mt-6 md:-mt-10">
         <div className="relative min-h-[82vh] overflow-hidden bg-[#0f2f2a] md:min-h-[88vh]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
