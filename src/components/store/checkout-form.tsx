@@ -10,6 +10,7 @@ import { useRouter } from "@/i18n/navigation";
 import { createOrderAction } from "@/actions/orders";
 import { useCart } from "@/hooks/use-cart";
 import { checkoutSchema, type CheckoutFormValues } from "@/validations/checkout";
+import { MOROCCO_CITY_NAMES, regionForCity } from "@/lib/morocco-cities";
 import { formatMoney } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,9 @@ type Zone = {
   pickupAvailable: boolean;
 };
 
+const DEFAULT_HOME_FEE = 35;
+const DEFAULT_PICKUP_FEE = 30;
+
 export function CheckoutForm({ zones }: { zones: Zone[] }) {
   const t = useTranslations();
   const router = useRouter();
@@ -37,8 +41,8 @@ export function CheckoutForm({ zones }: { zones: Zone[] }) {
       fullName: "",
       phone: "",
       phoneSecondary: "",
-      region: zones[0]?.region ?? "",
-      city: zones[0]?.city ?? "",
+      region: "",
+      city: "",
       addressLine: "",
       postalCode: "",
       notes: "",
@@ -49,25 +53,20 @@ export function CheckoutForm({ zones }: { zones: Zone[] }) {
     },
   });
 
-  const region = form.watch("region");
   const city = form.watch("city");
   const shippingType = form.watch("shippingType");
 
-  const cities = useMemo(
-    () => zones.filter((z) => z.region === region),
-    [zones, region],
-  );
-
-  const selectedZone = zones.find(
-    (z) => z.region === region && z.city.toLowerCase() === city.toLowerCase(),
-  );
+  const selectedZone = useMemo(() => {
+    if (!city) return undefined;
+    return zones.find((z) => z.city.toLowerCase() === city.toLowerCase());
+  }, [zones, city]);
 
   const shippingFee =
     shippingType === "PICKUP_POINT"
       ? selectedZone?.pickupAvailable
-        ? selectedZone.pickupPointFee ?? 0
-        : 0
-      : selectedZone?.homeDeliveryFee ?? 0;
+        ? selectedZone.pickupPointFee ?? DEFAULT_PICKUP_FEE
+        : DEFAULT_PICKUP_FEE
+      : selectedZone?.homeDeliveryFee ?? DEFAULT_HOME_FEE;
 
   useEffect(() => {
     form.setValue(
@@ -81,10 +80,10 @@ export function CheckoutForm({ zones }: { zones: Zone[] }) {
   }, [items, form]);
 
   useEffect(() => {
-    if (cities.length && !cities.some((c) => c.city === city)) {
-      form.setValue("city", cities[0].city);
+    if (city) {
+      form.setValue("region", regionForCity(city));
     }
-  }, [cities, city, form]);
+  }, [city, form]);
 
   if (items.length === 0) {
     return (
@@ -96,10 +95,12 @@ export function CheckoutForm({ zones }: { zones: Zone[] }) {
 
   const onSubmit = form.handleSubmit((values) => {
     startTransition(async () => {
+      const region = values.region || regionForCity(values.city);
       const result = await createOrderAction({
         ...values,
+        region,
         phoneSecondary: values.phoneSecondary || undefined,
-        postalCode: values.postalCode || undefined,
+        postalCode: undefined,
         notes: values.notes || undefined,
         couponCode: values.couponCode || undefined,
       });
@@ -115,8 +116,6 @@ export function CheckoutForm({ zones }: { zones: Zone[] }) {
     });
   });
 
-  const regions = Array.from(new Set(zones.map((z) => z.region)));
-
   return (
     <form onSubmit={onSubmit} className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
       <div className="space-y-5 rounded-2xl border border-border bg-card p-6">
@@ -125,55 +124,74 @@ export function CheckoutForm({ zones }: { zones: Zone[] }) {
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="fullName">{t("checkout.fullName")}</Label>
-            <Input id="fullName" {...form.register("fullName")} />
+            <Input
+              id="fullName"
+              autoComplete="name"
+              {...form.register("fullName")}
+            />
+            {form.formState.errors.fullName && (
+              <p className="text-xs text-destructive">{t(form.formState.errors.fullName.message as never)}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone">{t("checkout.phone")}</Label>
-            <Input id="phone" {...form.register("phone")} placeholder="0612345678" />
+            <Input
+              id="phone"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              dir="ltr"
+              placeholder="0612345678"
+              {...form.register("phone")}
+            />
+            {form.formState.errors.phone && (
+              <p className="text-xs text-destructive">{t(form.formState.errors.phone.message as never)}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="phoneSecondary">{t("checkout.phoneSecondary")}</Label>
-            <Input id="phoneSecondary" {...form.register("phoneSecondary")} />
+            <Input
+              id="phoneSecondary"
+              type="tel"
+              inputMode="tel"
+              dir="ltr"
+              placeholder="0612345678"
+              {...form.register("phoneSecondary")}
+            />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="region">{t("checkout.region")}</Label>
-            <select
-              id="region"
-              className="flex h-11 w-full rounded-xl border border-border bg-background px-3 text-sm"
-              {...form.register("region")}
-            >
-              {regions.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-2">
+          <div className="space-y-2 md:col-span-2">
             <Label htmlFor="city">{t("checkout.city")}</Label>
             <select
               id="city"
               className="flex h-11 w-full rounded-xl border border-border bg-background px-3 text-sm"
               {...form.register("city")}
             >
-              {cities.map((c) => (
-                <option key={c.city} value={c.city}>
-                  {c.city}
+              <option value="">{t("checkout.selectCity")}</option>
+              {MOROCCO_CITY_NAMES.map((name) => (
+                <option key={name} value={name}>
+                  {name}
                 </option>
               ))}
             </select>
+            {form.formState.errors.city && (
+              <p className="text-xs text-destructive">{t(form.formState.errors.city.message as never)}</p>
+            )}
           </div>
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="addressLine">{t("checkout.address")}</Label>
-            <Textarea id="addressLine" {...form.register("addressLine")} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="postalCode">{t("checkout.postalCode")}</Label>
-            <Input id="postalCode" {...form.register("postalCode")} />
+            <Textarea
+              id="addressLine"
+              rows={3}
+              placeholder={t("checkout.addressPlaceholder")}
+              {...form.register("addressLine")}
+            />
+            {form.formState.errors.addressLine && (
+              <p className="text-xs text-destructive">{t(form.formState.errors.addressLine.message as never)}</p>
+            )}
           </div>
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="notes">{t("checkout.notes")}</Label>
-            <Textarea id="notes" {...form.register("notes")} />
+            <Textarea id="notes" rows={2} {...form.register("notes")} />
           </div>
         </div>
 
@@ -187,7 +205,7 @@ export function CheckoutForm({ zones }: { zones: Zone[] }) {
             <input
               type="radio"
               value="PICKUP_POINT"
-              disabled={!selectedZone?.pickupAvailable}
+              disabled={selectedZone ? !selectedZone.pickupAvailable : false}
               {...form.register("shippingType")}
             />
             <span>{t("checkout.shippingPickup")}</span>

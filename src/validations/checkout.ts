@@ -24,7 +24,7 @@ export const checkoutSchema = z.object({
     .regex(phoneRegex, "validation.phoneInvalid")
     .optional()
     .or(z.literal("")),
-  region: z.string().trim().min(2, "validation.regionRequired"),
+  region: z.string().trim().min(2).optional().or(z.literal("")),
   city: z.string().trim().min(2, "validation.cityRequired"),
   addressLine: z.string().trim().min(5, "validation.addressMin").max(500),
   postalCode: z.string().trim().max(20).optional().or(z.literal("")),

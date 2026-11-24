@@ -24,7 +24,7 @@ export type CheckoutPayload = {
   fullName: string;
   phone: string;
   phoneSecondary?: string;
-  region: string;
+  region?: string;
   city: string;
   addressLine: string;
   postalCode?: string;

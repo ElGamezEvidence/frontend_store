@@ -1,0 +1,120 @@
+/** Villes du Maroc + région associée (pour livraison / commande). */
+export const MOROCCO_CITIES: { city: string; region: string }[] = [
+  // Casablanca-Settat
+  { city: "Casablanca", region: "Casablanca-Settat" },
+  { city: "Mohammedia", region: "Casablanca-Settat" },
+  { city: "Settat", region: "Casablanca-Settat" },
+  { city: "El Jadida", region: "Casablanca-Settat" },
+  { city: "Berrechid", region: "Casablanca-Settat" },
+  { city: "Bouskoura", region: "Casablanca-Settat" },
+  { city: "Dar Bouazza", region: "Casablanca-Settat" },
+  { city: "Aïn Harrouda", region: "Casablanca-Settat" },
+  { city: "Tit Mellil", region: "Casablanca-Settat" },
+  { city: "Médiouna", region: "Casablanca-Settat" },
+  { city: "Nouaceur", region: "Casablanca-Settat" },
+  { city: "Had Soualem", region: "Casablanca-Settat" },
+  { city: "Azemmour", region: "Casablanca-Settat" },
+  { city: "Sidi Bennour", region: "Casablanca-Settat" },
+  { city: "Bir Jdid", region: "Casablanca-Settat" },
+  { city: "Benslimane", region: "Casablanca-Settat" },
+  // Rabat-Salé-Kénitra
+  { city: "Rabat", region: "Rabat-Salé-Kénitra" },
+  { city: "Salé", region: "Rabat-Salé-Kénitra" },
+  { city: "Témara", region: "Rabat-Salé-Kénitra" },
+  { city: "Kénitra", region: "Rabat-Salé-Kénitra" },
+  { city: "Skhirat", region: "Rabat-Salé-Kénitra" },
+  { city: "Bouznika", region: "Rabat-Salé-Kénitra" },
+  { city: "Khémisset", region: "Rabat-Salé-Kénitra" },
+  { city: "Tifelt", region: "Rabat-Salé-Kénitra" },
+  { city: "Sidi Kacem", region: "Rabat-Salé-Kénitra" },
+  { city: "Sidi Slimane", region: "Rabat-Salé-Kénitra" },
+  { city: "Mehdia", region: "Rabat-Salé-Kénitra" },
+  // Marrakech-Safi
+  { city: "Marrakech", region: "Marrakech-Safi" },
+  { city: "Safi", region: "Marrakech-Safi" },
+  { city: "Essaouira", region: "Marrakech-Safi" },
+  { city: "El Kelaa des Sraghna", region: "Marrakech-Safi" },
+  { city: "Youssoufia", region: "Marrakech-Safi" },
+  { city: "Chichaoua", region: "Marrakech-Safi" },
+  { city: "Ben Guerir", region: "Marrakech-Safi" },
+  { city: "Rehamna", region: "Marrakech-Safi" },
+  // Fès-Meknès
+  { city: "Fès", region: "Fès-Meknès" },
+  { city: "Meknès", region: "Fès-Meknès" },
+  { city: "Taza", region: "Fès-Meknès" },
+  { city: "Ifrane", region: "Fès-Meknès" },
+  { city: "Azrou", region: "Fès-Meknès" },
+  { city: "Sefrou", region: "Fès-Meknès" },
+  { city: "El Hajeb", region: "Fès-Meknès" },
+  { city: "Boulemane", region: "Fès-Meknès" },
+  { city: "Missour", region: "Fès-Meknès" },
+  { city: "Ouazzane", region: "Fès-Meknès" },
+  // Tanger-Tétouan-Al Hoceïma
+  { city: "Tanger", region: "Tanger-Tétouan-Al Hoceïma" },
+  { city: "Tétouan", region: "Tanger-Tétouan-Al Hoceïma" },
+  { city: "Al Hoceïma", region: "Tanger-Tétouan-Al Hoceïma" },
+  { city: "Larache", region: "Tanger-Tétouan-Al Hoceïma" },
+  { city: "Asilah", region: "Tanger-Tétouan-Al Hoceïma" },
+  { city: "Chefchaouen", region: "Tanger-Tétouan-Al Hoceïma" },
+  { city: "Fnideq", region: "Tanger-Tétouan-Al Hoceïma" },
+  { city: "Martil", region: "Tanger-Tétouan-Al Hoceïma" },
+  { city: "M'diq", region: "Tanger-Tétouan-Al Hoceïma" },
+  { city: "Ksar El Kebir", region: "Tanger-Tétouan-Al Hoceïma" },
+  // Oriental
+  { city: "Oujda", region: "Oriental" },
+  { city: "Nador", region: "Oriental" },
+  { city: "Berkane", region: "Oriental" },
+  { city: "Taourirt", region: "Oriental" },
+  { city: "Guercif", region: "Oriental" },
+  { city: "Jerada", region: "Oriental" },
+  { city: "Figuig", region: "Oriental" },
+  { city: "Driouch", region: "Oriental" },
+  { city: "Bouarfa", region: "Oriental" },
+  // Béni Mellal-Khénifra
+  { city: "Beni Mellal", region: "Béni Mellal-Khénifra" },
+  { city: "Khouribga", region: "Béni Mellal-Khénifra" },
+  { city: "Khénifra", region: "Béni Mellal-Khénifra" },
+  { city: "Fquih Ben Salah", region: "Béni Mellal-Khénifra" },
+  { city: "Kasba Tadla", region: "Béni Mellal-Khénifra" },
+  { city: "Azilal", region: "Béni Mellal-Khénifra" },
+  { city: "Oued Zem", region: "Béni Mellal-Khénifra" },
+  // Drâa-Tafilalet
+  { city: "Errachidia", region: "Drâa-Tafilalet" },
+  { city: "Ouarzazate", region: "Drâa-Tafilalet" },
+  { city: "Zagora", region: "Drâa-Tafilalet" },
+  { city: "Tinghir", region: "Drâa-Tafilalet" },
+  { city: "Midelt", region: "Drâa-Tafilalet" },
+  { city: "Rissani", region: "Drâa-Tafilalet" },
+  // Souss-Massa
+  { city: "Agadir", region: "Souss-Massa" },
+  { city: "Inezgane", region: "Souss-Massa" },
+  { city: "Ait Melloul", region: "Souss-Massa" },
+  { city: "Taroudant", region: "Souss-Massa" },
+  { city: "Tiznit", region: "Souss-Massa" },
+  { city: "Dcheira El Jihadia", region: "Souss-Massa" },
+  { city: "Biougra", region: "Souss-Massa" },
+  { city: "Ouled Teima", region: "Souss-Massa" },
+  { city: "Tafraout", region: "Souss-Massa" },
+  // Guelmim-Oued Noun
+  { city: "Guelmim", region: "Guelmim-Oued Noun" },
+  { city: "Tan-Tan", region: "Guelmim-Oued Noun" },
+  { city: "Sidi Ifni", region: "Guelmim-Oued Noun" },
+  { city: "Assa", region: "Guelmim-Oued Noun" },
+  // Laâyoune-Sakia El Hamra
+  { city: "Laâyoune", region: "Laâyoune-Sakia El Hamra" },
+  { city: "Boujdour", region: "Laâyoune-Sakia El Hamra" },
+  { city: "Es-Semara", region: "Laâyoune-Sakia El Hamra" },
+  { city: "Tarfaya", region: "Laâyoune-Sakia El Hamra" },
+  // Dakhla-Oued Ed-Dahab
+  { city: "Dakhla", region: "Dakhla-Oued Ed-Dahab" },
+  { city: "Aousserd", region: "Dakhla-Oued Ed-Dahab" },
+].sort((a, b) => a.city.localeCompare(b.city, "fr"));
+
+export const MOROCCO_CITY_NAMES = MOROCCO_CITIES.map((c) => c.city);
+
+export function regionForCity(city: string): string {
+  const found = MOROCCO_CITIES.find(
+    (c) => c.city.toLowerCase() === city.trim().toLowerCase(),
+  );
+  return found?.region ?? "Maroc";
+}
