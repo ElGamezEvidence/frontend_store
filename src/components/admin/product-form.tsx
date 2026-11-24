@@ -231,7 +231,7 @@ export function ProductForm({
         </div>
         <div className="space-y-2">
           <Label htmlFor="sku">SKU principal</Label>
-          <Input id="sku" name="sku" defaultValue={initial?.sku} required />
+          <Input id="sku" name="sku" defaultValue={initial?.sku} required maxLength={200} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="slug">Slug</Label>

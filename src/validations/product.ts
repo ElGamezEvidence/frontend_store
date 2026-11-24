@@ -3,7 +3,7 @@ import { z } from "zod";
 export const productVariantSchema = z.object({
   id: z.string().cuid().optional(),
   name: z.string().trim().min(1).max(120),
-  sku: z.string().trim().min(1).max(80),
+  sku: z.string().trim().min(1).max(200),
   price: z.number().positive().optional().nullable(),
   compareAtPrice: z.number().positive().optional().nullable(),
   stockQuantity: z.number().int().min(0).optional().nullable(),
@@ -42,7 +42,7 @@ export const productSchema = z.object({
   price: z.number().positive(),
   compareAtPrice: z.number().positive().optional().nullable(),
   costPrice: z.number().positive().optional().nullable(),
-  sku: z.string().trim().min(1).max(80),
+  sku: z.string().trim().min(1).max(200),
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
   stockQuantity: z.number().int().min(0).optional().nullable(),
   isFeatured: z.boolean().default(false),
