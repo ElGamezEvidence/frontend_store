@@ -44,11 +44,11 @@ Le projet utilise **OpenNext** (`@opennextjs/cloudflare`) pour Next.js 15 sur **
 ### Réglages Cloudflare (Workers / Pages + Git)
 
 1. Connecter le repo `ElGamezEvidence/frontend_store`, branche `main`.
-2. **Build command** (important — ne pas mettre `npm run build`) :
+2. **Build command :**
    ```bash
-   npx opennextjs-cloudflare build
+   npm run build
    ```
-   OpenNext appellera lui-même `next build`. Si tu mets `npm run build`, ça boucle à l’infini.
+   (`next build` puis adaptation OpenNext avec `--skipNextBuild` — pas de boucle)
 3. **Deploy command :**
    ```bash
    npx wrangler deploy
